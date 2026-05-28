@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CafeFinder.com — Phnom Penh Photo-Worthy Cafes</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f0e8;
+      --surface: #ffffff;
+      --surface-soft: #fbf7f2;
+      --text: #2c2c2c;
+      --text-muted: #6e5d50;
+      --accent: #6f4e37;
+      --accent-soft: #f2e6d9;
+      --border: rgba(112, 78, 57, 0.15);
+      --shadow: 0 24px 60px rgba(92, 69, 59, 0.12);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      scroll-behavior: smooth;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    body {
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    .page-wrapper {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 0 0 64px;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(14px);
+      background: rgba(245, 240, 232, 0.95);
+      border-bottom: 1px solid rgba(112, 78, 57, 0.08);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 0;
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .brand {
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      font-size: 1.1rem;
+    }
+
+    .brand span {
+      display: block;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--accent);
+    }
+
+    .cta-button {
+      border: 1px solid var(--accent);
+      background: radial-gradient(circle at top left, #8a5f44, #6f4e37);
+      color: #fff;
+      border-radius: 999px;
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(111, 78, 55, 0.22);
+    }
+
+    .mobile-toggle {
+      display: none;
+      border: none;
+      background: none;
+      color: var(--accent);
+      cursor: pointer;
+      padding: 10px;
+    }
+
+    .mobile-toggle svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 760px;
+      margin: 24px 0 56px;
+      border-radius: 36px;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(44, 28, 19, 0.62) 0%, rgba(111, 78, 55, 0.26) 55%, rgba(245, 240, 232, 0.05) 100%),
+        url('https://images.unsplash.com/photo-1559710391-dcd6c798f21a?auto=format&fit=crop&w=1400&q=80') center/cover no-repeat;
+      box-shadow: var(--shadow);
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(255,255,255,0.24), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(255,255,255,0.16), transparent 24%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 38px;
+      align-items: center;
+      min-height: 100%;
+      padding: 64px 48px;
+    }
+
+    .hero-copy {
+      max-width: 620px;
+      display: grid;
+      gap: 24px;
+      color: #fff;
+    }
+
+    .hero-copy h1 {
+      font-size: clamp(2.8rem, 5vw, 4.4rem);
+      line-height: 0.98;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-copy p {
+      font-size: 1.05rem;
+      max-width: 560px;
+      color: #f2e8dd;
+    }
+
+    .hero-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: #fff;
+      font-size: 0.95rem;
+      width: fit-content;
+    }
+
+    .search-card {
+      border-radius: 30px;
+      padding: 28px;
+      background: rgba(255,255,255,0.92);
+      box-shadow: 0 28px 60px rgba(22, 16, 11, 0.14);
+      border: 1px solid rgba(111, 78, 55, 0.12);
+    }
+
+    .search-card h2 {
+      margin: 0 0 18px;
+      font-size: 1.35rem;
+      color: var(--text);
+    }
+
+    .search-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .field-group {
+      display: grid;
+      gap: 10px;
+    }
+
+    .field-group label {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .field-group input,
+    .field-group select {
+      width: 100%;
+      border: 1px solid rgba(111, 78, 55, 0.16);
+      border-radius: 16px;
+      padding: 14px 16px;
+      background: #fff;
+      color: var(--text);
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .field-group input:focus,
+    .field-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .search-submit {
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: transform 0.2s ease, filter 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+
+    .search-submit:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+    }
+
+    .hero-sneak {
+      display: grid;
+      gap: 18px;
+      margin-top: 14px;
+      color: #f3e8dc;
+      font-size: 0.95rem;
+    }
+
+    .hero-sneak span {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 999px;
+      padding: 12px 16px;
+      border: 1px solid rgba(255,255,255,0.16);
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 18px;
+      margin: 48px 0 24px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+    }
+
+    .section-title p {
+      margin: 0;
+      color: var(--text-muted);
+      max-width: 640px;
+    }
+
+    .categories-grid,
+    .card-grid,
+    .testimonial-grid {
+      display: grid;
+      gap: 20px;
+    }
+
+    .categories-grid {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .category-card,
+    .cafe-card,
+    .testimonial-card {
+      border-radius: 28px;
+      padding: 28px;
+      background: var(--surface);
+      border: 1px solid rgba(111, 78, 55, 0.08);
+      box-shadow: 0 16px 40px rgba(92, 69, 59, 0.08);
+    }
+
+    .category-card {
+      min-height: 260px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .category-card h3 {
+      margin: 0;
+      font-size: 1.35rem;
+    }
+
+    .category-card p {
+      color: var(--text-muted);
+      margin: 0;
+      line-height: 1.7;
+    }
+
+    .category-pill {
+      display: inline-flex;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      color: var(--accent);
+      background: rgba(111, 78, 55, 0.08);
+      width: fit-content;
+    }
+
+    .cafe-card {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-height: 520px;
+      overflow: hidden;
+    }
+
+    .cafe-cover {
+      position: relative;
+      min-height: 240px;
+      background: linear-gradient(135deg, #c8a18b 0%, #6f4e37 100%);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .cafe-cover img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(1.05) brightness(0.92);
+    }
+
+    .cafe-cover::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.45));
+    }
+
+    .cafe-cover span {
+      position: relative;
+      z-index: 1;
+      font-size: 1.1rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.92;
+    }
+
+    .cafe-card-body {
+      display: grid;
+      gap: 18px;
+      padding: 26px;
+    }
+
+    .cafe-meta-top {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .cafe-tag,
+    .vibe-pill {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      border: 1px solid rgba(111, 78, 55, 0.12);
+    }
+
+    .cafe-card h3 {
+      margin: 0;
+      font-size: 1.5rem;
+      line-height: 1.1;
+    }
+
+    .cafe-description {
+      margin: 0;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .rating-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .rating-row span:first-child {
+      color: #b48e6a;
+      letter-spacing: 0.04em;
+    }
+
+    .actions-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .details-button {
+      border: none;
+      background: linear-gradient(135deg, #6f4e37 0%, #8a5f44 100%);
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 18px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      font-weight: 700;
+    }
+
+    .details-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 30px rgba(111, 78, 55, 0.22);
+    }
+
+    .testimonial-grid {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    .testimonial-card {
+      display: grid;
+      gap: 18px;
+    }
+
+    .testimonial-card p {
+      margin: 0;
+      line-height: 1.8;
+      color: var(--text-muted);
+    }
+
+    .testimonial-author {
+      display: grid;
+      gap: 4px;
+    }
+
+    .testimonial-author strong {
+      font-size: 0.95rem;
+    }
+
+    .footer {
+      margin-top: 56px;
+      padding: 46px 0 24px;
+      color: #f2eee8;
+      background: #2c2c2c;
+    }
+
+    .footer-inner {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .footer h4 {
+      margin: 0 0 14px;
+      color: #fff;
+      font-size: 1rem;
+    }
+
+    .footer p,
+    .footer a {
+      margin: 0;
+      color: #cfc7c0;
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+
+    .footer a:hover {
+      color: #fff;
+    }
+
+    .footer-bottom {
+      margin-top: 32px;
+      text-align: center;
+      color: #a8a29e;
+      font-size: 0.92rem;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(28, 20, 14, 0.62);
+      z-index: 50;
+      padding: 20px;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+      animation: fadeIn 0.28s ease forwards;
+    }
+
+    .modal-panel {
+      width: min(100%, 860px);
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      border-radius: 30px;
+      background: #fff;
+      padding: 28px;
+      position: relative;
+      box-shadow: 0 40px 90px rgba(22, 16, 11, 0.2);
+      animation: slideUp 0.32s ease forwards;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      border: none;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(44, 44, 44, 0.07);
+      cursor: pointer;
+      color: var(--text);
+      font-size: 1.2rem;
+      display: grid;
+      place-items: center;
+    }
+
+    .modal-grid {
+      display: grid;
+      gap: 24px;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    .modal-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .modal-meta span {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .modal-description {
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    .modal-map {
+      min-height: 260px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, #e8dfd5 0%, #d1b8a3 100%);
+      border: 1px solid rgba(112, 78, 57, 0.14);
+      display: grid;
+      place-items: center;
+      color: #5b4132;
+      font-size: 1rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .modal-map::after {
+      content: "Map placeholder";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      opacity: 0.88;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .info-card {
+      padding: 20px;
+      border-radius: 22px;
+      background: #fbf5ee;
+      border: 1px solid rgba(111, 78, 55, 0.12);
+    }
+
+    .info-card h4 {
+      margin: 0 0 10px;
+      color: var(--accent);
+      font-size: 0.95rem;
+    }
+
+    .info-card p {
+      margin: 0;
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(24px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @media (max-width: 1024px) {
+      .hero-content {
+        grid-template-columns: 1fr;
+        padding: 56px 32px;
+      }
+
+      .section-title {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .nav-inner {
+        flex-wrap: wrap;
+      }
+
+      .nav-links {
+        order: 3;
+        width: 100%;
+        display: none;
+        flex-direction: column;
+        gap: 14px;
+        padding: 16px 0;
+        border-top: 1px solid rgba(111, 78, 55, 0.08);
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .mobile-toggle {
+        display: inline-flex;
+      }
+
+      .hero {
+        min-height: 760px;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .page-wrapper {
+        padding-bottom: 40px;
+      }
+
+      .hero {
+        margin: 16px 0 40px;
+      }
+
+      .hero-content {
+        gap: 28px;
+        padding: 40px 22px;
+      }
+
+      .section-title,
+      .footer-inner {
+        gap: 18px;
+      }
+
+      .category-card,
+      .cafe-card,
+      .testimonial-card {
+        padding: 22px;
+      }
+
+      .nav-links {
+        gap: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav-inner" aria-label="Primary navigation">
+      <div class="brand">
+        CafeFinder.com
+        <span>Phnom Penh Cafe Discovery</span>
+      </div>
+
+      <button class="mobile-toggle" aria-expanded="false" aria-controls="navLinks" id="navToggle">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+
+      <div class="nav-links" id="navLinks">
+        <a href="#home">Home</a>
+        <a href="#explore">Explore Cafes</a>
+        <a href="#features">Features</a>
+        <a href="#testimonials">Testimonials</a>
+      </div>
+
+      <a href="#" class="cta-button">Join as Owner</a>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+    <section class="hero" id="home">
+      <div class="hero-content">
+        <div class="hero-copy">
+          <span class="hero-status">Explore curated cafe destinations</span>
+          <h1>Discover Your Next Photo-Worthy Cafe in Phnom Penh</h1>
+          <p>Filter by vibe, location, and find the perfect aesthetic spot for your Instagram grid.</p>
+
+          <div class="hero-sneak">
+            <span>Curated cafes with premium interiors and lifestyle energy</span>
+            <span>Perfect for photo shoots, brunches, and creative meetups</span>
+          </div>
+        </div>
+
+        <div class="search-card" aria-label="Search and filter cafes">
+          <h2>Search cafes by name, area, and vibe</h2>
+          <form id="searchForm" class="search-grid">
+            <div class="field-group">
+              <label for="searchInput">Search by name</label>
+              <input id="searchInput" type="search" placeholder="e.g. Brown Coffee Roastery" />
+            </div>
+            <div class="field-group">
+              <label for="areaSelect">Area</label>
+              <select id="areaSelect">
+                <option value="all">All areas</option>
+                <option value="BKK1">BKK1</option>
+                <option value="Toul Kork">Toul Kork</option>
+                <option value="Daun Penh">Daun Penh</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label for="vibeSelect">Vibe</label>
+              <select id="vibeSelect">
+                <option value="all">All vibes</option>
+                <option value="Minimalist">Minimalist</option>
+                <option value="Nature">Nature</option>
+                <option value="Vintage">Vintage</option>
+              </select>
+            </div>
+            <button type="button" class="search-submit" id="searchButton">Find Cafes</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="section-title">
+        <div>
+          <h2>Feature Vibes</h2>
+          <p>Explore three signature cafe moods that capture Phnom Penh's creative coffee scene.</p>
+        </div>
+      </div>
+
+      <div class="categories-grid">
+        <article class="category-card">
+          <span class="category-pill">Minimalist & Clean</span>
+          <h3>Soft palettes, natural light, and calm corners.</h3>
+          <p>Spaces designed for editorial photos, polished coffee styling, and relaxed afternoon work sessions.</p>
+        </article>
+        <article class="category-card">
+          <span class="category-pill">Jungle & Nature Vibe</span>
+          <h3>Lush greenery, earth tones, and natural textures.</h3>
+          <p>Find cafes with plant-filled interiors, cascading vines, and leafy atmosphere for moody photo stories.</p>
+        </article>
+        <article class="category-card">
+          <span class="category-pill">Vintage & Antique</span>
+          <h3>Old-world charm with classic coffee culture energy.</h3>
+          <p>Discover nostalgic decor, leather seating, and warm lighting perfect for retro snapshots.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="explore">
+      <div class="section-title">
+        <div>
+          <h2>Popular Cafes This Week</h2>
+          <p>Browse curated cafes chosen for their aesthetic atmosphere, quality coffee, and photogenic details.</p>
+        </div>
+      </div>
+
+      <div class="card-grid" id="cafeGrid"></div>
+    </section>
+
+    <section id="testimonials">
+      <div class="section-title">
+        <div>
+          <h2>What creators love about CafeFinder</h2>
+          <p>Real feedback from photographers, influencers, and coffee lovers who found their next favorite spot.</p>
+        </div>
+      </div>
+
+      <div class="testimonial-grid">
+        <article class="testimonial-card">
+          <p>"CafeFinder helped me discover beautiful spots in Phnom Penh that feel unique and camera-ready. Every cafe has a story and a perfect corner for my shoots."</p>
+          <div class="testimonial-author">
+            <strong>May Lin</strong>
+            <span>Content creator & photographer</span>
+          </div>
+        </article>
+        <article class="testimonial-card">
+          <p>"The search filters are clean and fast, and the cafe details give me everything I need before I visit. I love the vibe categories and the curated cafe list."</p>
+          <div class="testimonial-author">
+            <strong>Rithy Chea</strong>
+            <span>Creative director</span>
+          </div>
+        </article>
+        <article class="testimonial-card">
+          <p>"Amazing resource for anyone looking for stylish cafes in Phnom Penh. The modal detail views are especially helpful for planning my weekend photography routes."</p>
+          <div class="testimonial-author">
+            <strong>Linh Tran</strong>
+            <span>Visual storyteller</span>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <h4>Quick Links</h4>
+        <p><a href="#home">Home</a></p>
+        <p><a href="#explore">Explore Cafes</a></p>
+        <p><a href="#features">Features</a></p>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <p>Email: hello@cafefinder.com</p>
+        <p>Phone: +855 12 345 678</p>
+        <p>Phnom Penh, Cambodia</p>
+      </div>
+      <div>
+        <h4>About</h4>
+        <p>CafeFinder helps you discover beautiful cafes for photo shoots, casual meetups, and creative inspiration across Phnom Penh.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 CafeFinder. All rights reserved.</div>
+  </footer>
+
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="close-modal" id="closeModal" aria-label="Close details modal">×</button>
+      <div class="modal-grid">
+        <div class="modal-header">
+          <h3 id="modalTitle">Cafe name</h3>
+          <div class="modal-meta">
+            <span id="modalArea">Area</span>
+            <span id="modalHours">Opening hours</span>
+            <span id="modalRating">Rating</span>
+          </div>
+        </div>
+        <div class="modal-description" id="modalDescription">
+          Cafe details go here.
+        </div>
+        <div class="modal-map" aria-hidden="true"></div>
+        <div class="info-grid">
+          <div class="info-card">
+            <h4>Contact</h4>
+            <p id="modalContact">Phone / email</p>
+          </div>
+          <div class="info-card">
+            <h4>Perfect For</h4>
+            <p id="modalPerfectFor">Vibe and photography details</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const cafes = [
+      {
+        id: 1,
+        name: "Brown Coffee Roastery",
+        area: "BKK1",
+        vibe: ["Minimalist", "Vintage"],
+        rating: 4.9,
+        hours: "8:00 AM - 8:00 PM",
+        description: "A stylish roastery with warm leather seating, clean lines, and soft natural light. Ideal for editorial coffee shots and casual moments in a polished space.",
+        perfectFor: "Editorial portraits, lifestyle flatlays, coffee aesthetic shoots",
+        contact: "+855 12 345 678",
+        image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1200&q=80",
+        coverLabel: "Roastery"
+      },
+      {
+        id: 2,
+        name: "Space Cafe",
+        area: "Toul Kork",
+        vibe: ["Minimalist", "Nature"],
+        rating: 4.8,
+        hours: "9:00 AM - 9:00 PM",
+        description: "A modern oasis featuring leafy corners, textured ceramics, and quiet cafe tables surrounded by greenery. Perfect for clean visual compositions with a calming atmosphere.",
+        perfectFor: "Botanical stories, product shots, quiet creative meetings",
+        contact: "+855 98 765 432",
+        image: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80",
+        coverLabel: "Nature"
+      },
+      {
+        id: 3,
+        name: "The Hidden Leaf",
+        area: "Daun Penh",
+        vibe: ["Vintage", "Nature"],
+        rating: 4.7,
+        hours: "10:00 AM - 10:00 PM",
+        description: "A hidden garden cafe with retro charm, rattan seating, and soft hanging lamps. Its layered textures make every frame feel like a warm, nostalgic story.",
+        perfectFor: "Vintage portraits, indoor garden scenes, storytelling shoots",
+        contact: "+855 17 555 123",
+        image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80",
+        coverLabel: "Garden"
+      }
+    ];
+
+    const cafeGrid = document.getElementById('cafeGrid');
+    const searchInput = document.getElementById('searchInput');
+    const areaSelect = document.getElementById('areaSelect');
+    const vibeSelect = document.getElementById('vibeSelect');
+    const searchButton = document.getElementById('searchButton');
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const closeModal = document.getElementById('closeModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalArea = document.getElementById('modalArea');
+    const modalHours = document.getElementById('modalHours');
+    const modalRating = document.getElementById('modalRating');
+    const modalDescription = document.getElementById('modalDescription');
+    const modalContact = document.getElementById('modalContact');
+    const modalPerfectFor = document.getElementById('modalPerfectFor');
+
+    function renderCafeCards(list) {
+      cafeGrid.innerHTML = list.map(cafe => `
+        <article class="cafe-card">
+          <div class="cafe-cover">
+            <img src="${cafe.image}" alt="Interior of ${cafe.name}" />
+            <span>${cafe.coverLabel}</span>
+          </div>
+          <div class="cafe-card-body">
+            <div class="cafe-meta-top">
+              <span class="cafe-tag">${cafe.area}</span>
+              <div class="rating-row"><span>⭐⭐⭐⭐⭐</span><span>${cafe.rating.toFixed(1)}</span></div>
+            </div>
+            <h3>${cafe.name}</h3>
+            <p class="cafe-description">${cafe.description}</p>
+            <div class="tag-list">
+              ${cafe.vibe.map(tag => `<span class="vibe-pill">${tag}</span>`).join('')}
+            </div>
+            <div class="actions-row">
+              <div class="rating-row"><span>Hours:</span><span>${cafe.hours}</span></div>
+              <button class="details-button" data-cafe-id="${cafe.id}">View Details</button>
+            </div>
+          </div>
+        </article>
+      `).join('');
+
+      document.querySelectorAll('.details-button').forEach(button => {
+        button.addEventListener('click', () => {
+          openCafeModal(Number(button.dataset.cafeId));
+        });
+      });
+    }
+
+    function openCafeModal(id) {
+      const cafe = cafes.find(item => item.id === id);
+      if (!cafe) return;
+      modalTitle.textContent = cafe.name;
+      modalArea.textContent = cafe.area;
+      modalHours.textContent = cafe.hours;
+      modalRating.textContent = `Rating: ${cafe.rating.toFixed(1)}`;
+      modalDescription.textContent = cafe.description;
+      modalContact.textContent = cafe.contact;
+      modalPerfectFor.textContent = cafe.perfectFor;
+      modalBackdrop.classList.add('active');
+      modalBackdrop.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeCafeModal() {
+      modalBackdrop.classList.remove('active');
+      modalBackdrop.setAttribute('aria-hidden', 'true');
+    }
+
+    function filterCafes() {
+      const query = searchInput.value.trim().toLowerCase();
+      const selectedArea = areaSelect.value;
+      const selectedVibe = vibeSelect.value;
+      const results = cafes.filter(cafe => {
+        const matchesSearch = cafe.name.toLowerCase().includes(query) || cafe.area.toLowerCase().includes(query) || cafe.vibe.some(v => v.toLowerCase().includes(query));
+        const matchesArea = selectedArea === 'all' || cafe.area === selectedArea;
+        const matchesVibe = selectedVibe === 'all' || cafe.vibe.includes(selectedVibe);
+        return matchesSearch && matchesArea && matchesVibe;
+      });
+      renderCafeCards(results);
+    }
+
+    navToggle.addEventListener('click', () => {
+      const expanded = navToggle.getAttribute('aria-expanded') === 'true';
+      navToggle.setAttribute('aria-expanded', String(!expanded));
+      navLinks.classList.toggle('open');
+    });
+
+    searchButton.addEventListener('click', filterCafes);
+    searchInput.addEventListener('input', filterCafes);
+    areaSelect.addEventListener('change', filterCafes);
+    vibeSelect.addEventListener('change', filterCafes);
+
+    closeModal.addEventListener('click', closeCafeModal);
+    modalBackdrop.addEventListener('click', event => {
+      if (event.target === modalBackdrop) closeCafeModal();
+    });
+    window.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && modalBackdrop.classList.contains('active')) {
+        closeCafeModal();
+      }
+    });
+
+    renderCafeCards(cafes);
+  </script>
+</body>
+</html>
